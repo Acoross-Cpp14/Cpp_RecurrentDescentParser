@@ -120,9 +120,12 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="RDParser.cpp" />
+    <ClCompile Include="Scanner.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RDParser.h" />
+    <ClInclude Include="Scanner.h" />
+    <ClInclude Include="ScannerBase.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
