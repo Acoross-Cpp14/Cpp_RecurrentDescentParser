@@ -3,8 +3,9 @@
 #include <string>
 #include <regex>
 
-#include "Scanner.h"
+#include "Scanner\Scanner.h"
 
+using namespace AcorossScanner;
 
 void RegexSample()
 {
