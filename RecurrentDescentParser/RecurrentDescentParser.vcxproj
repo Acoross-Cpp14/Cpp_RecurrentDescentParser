@@ -119,9 +119,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Parser\Parser.cpp" />
+    <ClCompile Include="parser\ParserBase.cpp" />
+    <ClCompile Include="scanner\FuncScanner.cpp" />
     <ClCompile Include="Scanner\Scanner.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Parser\Parser.h" />
+    <ClInclude Include="Parser\ParserBase.h" />
+    <ClInclude Include="scanner\FuncScanner.h" />
     <ClInclude Include="Scanner\Scanner.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
