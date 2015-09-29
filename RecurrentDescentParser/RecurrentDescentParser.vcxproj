@@ -119,13 +119,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="RDParser.cpp" />
-    <ClCompile Include="Scanner.cpp" />
+    <ClCompile Include="Scanner\Scanner.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="RDParser.h" />
-    <ClInclude Include="Scanner.h" />
-    <ClInclude Include="ScannerBase.h" />
+    <ClInclude Include="Scanner\Scanner.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

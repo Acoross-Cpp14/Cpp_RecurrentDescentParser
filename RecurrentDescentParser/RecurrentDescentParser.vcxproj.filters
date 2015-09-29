@@ -21,21 +21,12 @@
     <ClCompile Include="main.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="RDParser.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="Scanner.cpp">
+    <ClCompile Include="Scanner\Scanner.cpp">
       <Filter>Scanner</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="RDParser.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="ScannerBase.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Scanner.h">
+    <ClInclude Include="Scanner\Scanner.h">
       <Filter>Scanner</Filter>
     </ClInclude>
   </ItemGroup>
