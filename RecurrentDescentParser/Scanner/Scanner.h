@@ -6,120 +6,124 @@
 #include <iterator>
 #include <regex>
 
+#include "..\default.h"
+
 using namespace std;
 
 namespace AcorossScanner
 {
-	void get_next_char(wchar_t*& input);
-
-	template<typename T>
+	template <typename TkTy>
 	struct TokenDefine
 	{
-		T type;
+		TkTy type;
 		const wchar_t* rx;
 	};
 
-	template <typename TKEnum>
-	class Scanner
+	//void get_next_char(wchar_t*& input);
+		
+	template <typename ScannerDefine>
+	class Scanner : public ScannerDefine
 	{
 	public:
-		typedef TKEnum TKType;
-		typedef TokenDefine<TKType> TKDefine;
-		
+		typedef ScannerDefine _MyDef;
+		typedef typename _MyDef::TokenType TokenType;
+		typedef typename _MyDef::_TkDef _MyTkDef;
+
 		struct Token
 		{
-			TKType type;
+			TokenType type;
 			wstring data;
 		};
-
-		Scanner(TKDefine* tokenDefines)
+		
+	public:
+		Scanner()
 		{
-			m_pTokenDefines = tokenDefines;
 		}
 
-		Token Scan(wchar_t*& input)
+		Token Scan(wchar_t*& input);
+
+	private:
+		void get_next_char(wchar_t*& input)
 		{
-			Token ret;
-			ret.type = TK_NULL;
-			ret.data = L"";
+			++(input);
+		}
 
-			if (nullptr == input)
-			{
-				return ret;
-			}
+	private:
+		NO_COPY(Scanner);
+	};
+	
+	template <typename ScannerDefine>
+	typename Scanner<ScannerDefine>::Token Scanner<ScannerDefine>::Scan(wchar_t*& input)
+	{
+		Token ret;
+		ret.type = TK_MAX;
+		ret.data = L"";
 
+		if (nullptr == input)
+		{
+			return ret;
+		}
+
+		// skip white spaces and comments
+		{
 			// skip any initial white space (' ', '/t', '/n')
+			bool bContinue = true;
+			while (bContinue)
 			{
-				bool bContinue = true;
-				while (bContinue)
+				switch (*input)
 				{
-					switch (*input)
-					{
-					case L' ':
-					case L'\t':
-					case L'\n':
-						get_next_char(input);
-						break;
-					default:
-						bContinue = false;
-						break;
-					}
-				}
-			}
-
-			wchar_t* pStart = input;
-
-			// Comment 
-			{
-				if (*input == L'/')
-				{
+				case L' ':
+				case L'\t':
+				case L'\n':
 					get_next_char(input);
-					if (*input == L'/')
-					{
-						get_next_char(input);
-						while (*input != L'\n' && *input != L'\0')
-						{
-							get_next_char(input);
-						}
-
-						ret.type = COMMENT;
-						ret.data = L"";
-
-						return ret;
-					}
-				}
-			}
-
-			// TokenDefines 를 이용하여 regular expression 으로 token get.
-			unsigned int nTDCnt = TKType::TK_MAX;
-			for (unsigned int i = 1; i < nTDCnt; ++i)	// 0 -> null
-			{
-				const TKDefine& td = m_pTokenDefines[i];
-
-				if (td.type == TK_NULL)
-				{
-					continue;
-				}
-
-				std::wcmatch wcm;
-				std::wregex word_regex(td.rx);
-				//if (std::regex_match(input, wcm, word_regex, std::regex_constants::match_continuous))
-				if (std::regex_search(input, wcm, word_regex, std::regex_constants::match_continuous))
-				{
-					input = input + wcm[0].length();
-					ret.type = td.type;
-					ret.data = wcm[0];
-
+					break;
+				default:
+					bContinue = false;
 					break;
 				}
 			}
 
-			return ret;
+			// skip Comment 
+			if (*input == L'/')
+			{
+				get_next_char(input);
+				if (*input == L'/')
+				{
+					get_next_char(input);
+					while (*input != L'\n' && *input != L'\0')
+					{
+						get_next_char(input);
+					}
+				}
+			}
 		}
 
-		TKDefine* m_pTokenDefines;
-	};
+		wchar_t* pStart = input;
 
-	//template<typename TKEnum>
-	//Token Scanner<TKEnum>::Scan(wchar_t*& input)
+		// TokenDefines 를 이용하여 regular expression 으로 token get.
+		unsigned int nTDCnt = TokenType::TK_MAX;
+		for (unsigned int i = 0; i < nTDCnt; ++i)	// 0 -> null
+		{
+			const _MyTkDef& td = GetTokenDefine(static_cast<TokenType>(i));
+
+			if (td.type == TokenType::TK_MAX)
+			{
+				continue;
+			}
+
+			std::wcmatch wcm;
+			std::wregex word_regex(td.rx);
+			//if (std::regex_match(input, wcm, word_regex, std::regex_constants::match_continuous))
+			if (std::regex_search(input, wcm, word_regex, std::regex_constants::match_continuous))
+			{
+				input = input + wcm[0].length();
+				ret.type = td.type;
+				ret.data = wcm[0];
+
+				break;
+			}
+		}
+
+		return ret;
+	}
 }

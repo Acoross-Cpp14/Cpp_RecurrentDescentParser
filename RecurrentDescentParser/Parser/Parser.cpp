@@ -146,13 +146,22 @@ namespace AcorossParser
 		return false;
 	}
 	
+	class Tran
+	{
+	public:		
+		Tran(void(*func))
+		{
+			  
+		}
+	};
+
 	bool Parser::procStmt()
 	{
 		FuncScanner::Token tmpTk = m_ret;
 		wchar_t* tmpInput = m_input;
 				
-		if (match(TKType::COMMENT))
-			return true;
+		//if (match(TKType::COMMENT))
+		//	return true;
 
 		MATCHTRUE(TKType::DIGIT)
 		{
@@ -198,7 +207,7 @@ namespace AcorossParser
 				(*tmpFunc)();
 			}
 			
-			if (match(TKType::SEMICOLON))
+			MATCHTRUE(TKType::SEMICOLON)
 			{
 				wprintf_s(L";");
 				return true;
@@ -217,7 +226,7 @@ namespace AcorossParser
 		wchar_t* tmpInput = m_input;
 
 		if (procStmt())
-			if (match(TKType::TK_NULL))
+			if (match(TKType::TK_MAX))
 				return true;
 
 		m_ret = tmpTk;
@@ -240,8 +249,6 @@ namespace AcorossParser
 		int nScriptLine = 0;
 		std::wstring wline;
 		
-		//m_scanner = FuncScanner(_TokenDefines);
-
 		bool ret = true;
 		while (std::getline(wis, wline))	// 한 줄 읽어들인다.
 		{	
@@ -266,7 +273,7 @@ namespace AcorossParser
 		return true;
 	}
 
-	bool Parser::match(FuncScanner::TKType expected)
+	bool Parser::match(Parser::TKType expected)
 	{
 		if (m_ret.type == expected)
 		{

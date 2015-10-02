@@ -8,10 +8,10 @@ using namespace std;
 
 namespace AcorossScanner
 {
-	void get_next_char(wchar_t*& input)
+	/*void get_next_char(wchar_t*& input)
 	{
 		++(input);
-	}
+	}*/
 
 	/*static bool isID(wchar_t wch)
 	{

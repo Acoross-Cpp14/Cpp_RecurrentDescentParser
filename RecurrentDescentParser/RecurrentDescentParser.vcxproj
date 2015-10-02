@@ -74,6 +74,8 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>default.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -125,10 +127,14 @@
     <ClCompile Include="Scanner\Scanner.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="default.h" />
     <ClInclude Include="Parser\Parser.h" />
     <ClInclude Include="Parser\ParserBase.h" />
     <ClInclude Include="scanner\FuncScanner.h" />
     <ClInclude Include="Scanner\Scanner.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ScannerImplMacro.inc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

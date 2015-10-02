@@ -12,7 +12,9 @@ namespace AcorossParser
 		AT_STR,
 		AT_FUNC
 	};
+
 	typedef void(*ARG_FUNC)();
+
 	class ARG
 	{
 	public:
@@ -30,8 +32,10 @@ namespace AcorossParser
 	class Parser
 	{
 	public:
+		typedef FuncScanner::TokenType TKType;
+		typedef FuncScanner::Token Token;
+	public:
 		Parser()
-			: m_scanner(_TokenDefines)			
 		{
 			;
 		}
@@ -45,16 +49,15 @@ namespace AcorossParser
 		ARG procArg();
 		bool procArgTail(ARGLIST& arglist);
 		bool procFunc(ARG_FUNC& func);
-		typedef FuncTokenType TKType;
+		
+		bool match(TKType expected);
 
-		FuncScanner::Token m_parsedTk;
-		FuncScanner::Token m_ret;
+		Token m_parsedTk;
+		Token m_ret;
 
 		wchar_t m_buf[2000];
 		wchar_t* m_input;
 
 		FuncScanner m_scanner;
-
-		bool match(TKType expected);
 	};
 }
