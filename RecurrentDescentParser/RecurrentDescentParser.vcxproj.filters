@@ -55,8 +55,8 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="ScannerImplMacro.inc">
-      <Filter>소스 파일</Filter>
+    <None Include="Scanner\ScannerImplMacro.inc">
+      <Filter>Scanner</Filter>
     </None>
   </ItemGroup>
 </Project>

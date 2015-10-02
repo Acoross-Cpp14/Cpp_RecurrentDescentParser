@@ -23,7 +23,7 @@ add_token(COMMENT, L"//(.*)"),	\*/
 // Just change struct name
 struct FuncScannerDefine
 {
-#include "..\ScannerImplMacro.inc"
+#include "ScannerImplMacro.inc"
 };
 #undef token_list
 

@@ -134,7 +134,7 @@
     <ClInclude Include="Scanner\Scanner.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ScannerImplMacro.inc" />
+    <None Include="Scanner\ScannerImplMacro.inc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
