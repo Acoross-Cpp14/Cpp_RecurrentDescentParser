@@ -33,9 +33,6 @@
     <ClCompile Include="parser\ParserBase.cpp">
       <Filter>Parser</Filter>
     </ClCompile>
-    <ClCompile Include="scanner\FuncScanner.cpp">
-      <Filter>Scanner</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scanner\Scanner.h">

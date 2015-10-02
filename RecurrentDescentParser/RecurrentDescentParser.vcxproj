@@ -123,7 +123,6 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Parser\Parser.cpp" />
     <ClCompile Include="parser\ParserBase.cpp" />
-    <ClCompile Include="scanner\FuncScanner.cpp" />
     <ClCompile Include="Scanner\Scanner.cpp" />
   </ItemGroup>
   <ItemGroup>
