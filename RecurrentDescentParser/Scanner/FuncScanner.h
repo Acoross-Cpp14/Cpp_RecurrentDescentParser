@@ -1,5 +1,6 @@
 #pragma once
 
+// related headers
 #include "Scanner.h"
 
 using namespace AcorossScanner;
@@ -7,6 +8,10 @@ using namespace AcorossScanner;
 /*add_token(TK_NULL, nullptr), \
 add_token(COMMENT, L"//(.*)"),	\*/
 
+/////////////////////////////////////////////////////////
+// code for scanner generation
+SCANNERDEF_BEGIN(FuncScannerDefine)
+{
 #define token_list  \
 	add_token(SEMICOLON, L";"), \
 	add_token(COMMA, L","),	\
@@ -18,13 +23,10 @@ add_token(COMMENT, L"//(.*)"),	\*/
 	add_token(ANYWORD, L"([^ \t\n\\(\\),])+"), \
 	add_token(TK_MAX, nullptr)
 
-/////////////////////////////////////////////////////////
-// code for scanner generation
-// Just change struct name
-struct FuncScannerDefine
-{
-#include "ScannerImplMacro.inc"
-};
+#include "./ScannerImplMacro.inc"
+
 #undef token_list
+}
+SCANNERDEF_END
 
 typedef Scanner<FuncScannerDefine> FuncScanner;

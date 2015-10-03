@@ -1,12 +1,17 @@
 #pragma once
 
+// STL headers
 #include <string>
 #include <unordered_map>
 #include <iostream>
 #include <iterator>
 #include <regex>
 
-#include "..\default.h"
+// My Project's headers
+#include "../default.h"
+
+#define SCANNERDEF_BEGIN(T) struct T
+#define SCANNERDEF_END	;
 
 using namespace std;
 

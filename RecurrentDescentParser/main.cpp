@@ -3,8 +3,8 @@
 #include <string>
 #include <regex>
 
-#include "Scanner\Scanner.h"
-#include "Parser\Parser.h"
+#include "Scanner/Scanner.h"
+#include "Parser/Parser.h"
 
 using namespace AcorossScanner;
 
@@ -49,6 +49,10 @@ int main()
 		std::wcout << "ret - " << FuncScanner::Token::TokenToName(ret.type) << L":" << ret.data << std::endl << std::endl;
 	}
 */
+
+	FuncScannerDefine fsd;
+	fsd.GetTokenDefine(fsd.ANYWORD);
+	
 	////////////////////////
 	AcorossParser::Parser parser;
 	parser.Load(L"monster.csv");
