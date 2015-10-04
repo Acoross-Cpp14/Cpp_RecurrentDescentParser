@@ -45,10 +45,10 @@ namespace AcorossScanner
 		{
 		}
 
-		Token Scan(wchar_t*& input);
+		static Token Scan(wchar_t*& input);
 
 	private:
-		void get_next_char(wchar_t*& input)
+		static void get_next_char(wchar_t*& input)
 		{
 			++(input);
 		}

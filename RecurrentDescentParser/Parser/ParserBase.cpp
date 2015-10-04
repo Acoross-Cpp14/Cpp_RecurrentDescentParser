@@ -1,7 +1,4 @@
 #include "ParserBase.h"
 
-namespace NParserBase
-{
-	
-}
-
+//template <typename ScanT>
+CParserBase::ParserSymbolDefines* CParserBase::ParserSymbolDefines::m_inst = nullptr;

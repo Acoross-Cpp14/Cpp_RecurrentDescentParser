@@ -13,7 +13,7 @@
 
 	// 사용 가능한 Token의 regex 를 정의.
 #define add_token(type, rex) {type, rex}
-	const _TkDef& GetTokenDefine(TokenType type) 
+	static const _TkDef& GetTokenDefine(TokenType type) 
 	{
 		static const _TkDef TokenDefines[] = 
 		{ 
@@ -24,7 +24,7 @@
 #undef add_token
 
 #define add_token(type, rex) L#type
-	const wchar_t* TokenToName(TokenType type) {
+	static const wchar_t* TokenToName(TokenType type) {
 		static const wchar_t* nameMap[] = 
 		{ 
 			token_list 

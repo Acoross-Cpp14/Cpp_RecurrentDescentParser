@@ -5,73 +5,9 @@
 
 #include "Scanner/Scanner.h"
 #include "Parser/Parser.h"
-
-//temp
-#include <fstream>
-#include <locale>
-#include <codecvt>
-#include <list>
-//temp
+#include "Parser/ParserBase.h"
 
 using namespace AcorossScanner;
-
-class ParserTemp
-{
-public:
-	enum ParserSymbolType
-	{
-
-	};
-
-	struct ParserSymbol
-	{
-		ParserSymbolType eType;
-
-	};
-
-	// derivation
-	bool Derivation()
-	{
-		// or 조건은 한 함수로 표현하지 않는다.
-		list<ParserSymbol> symbol_list;
-		for (const auto it_symbol = symbol_list.begin(); it_symbol != symbol_list.end(); ++it_symbol)
-		{
-			// 
-		}
-
-		return true;
-	}
-
-	void Run()
-	{
-		FuncScanner scanner;
-		setlocale(LC_ALL, "");
-
-		std::wifstream wis(L"monster.csv", std::ifstream::binary);
-		if (false == wis.is_open())
-			return;
-		
-		// apply BOM-sensitive UTF-16 facet
-		wis.imbue(std::locale(wis.getloc(), new std::codecvt_utf16<wchar_t, 0x10ffff, std::consume_header>));
-
-		int nScriptLine = 0;
-		std::wstring wline;
-
-		bool ret = true;
-		if (std::getline(wis, wline))	// 한 줄 읽어들인다.
-		{
-			memset(m_buf, 0, sizeof(m_buf));
-			wline._Copy_s(m_buf, 2000, wline.size(), 0);
-			wchar_t* input = m_buf;
-			input = m_buf;
-
-			scanner.Scan(input);
-		}
-	}
-
-private:
-	wchar_t m_buf[2000];
-};
 
 void RegexSample()
 {
@@ -114,13 +50,13 @@ int main()
 		std::wcout << "ret - " << FuncScanner::Token::TokenToName(ret.type) << L":" << ret.data << std::endl << std::endl;
 	}
 */
-
-	FuncScannerDefine fsd;
-	fsd.GetTokenDefine(fsd.ANYWORD);
 	
+	CParserBase p;
+	p.Run();
+
 	////////////////////////
-	AcorossParser::Parser parser;
-	parser.Load(L"monster.csv");
+	//AcorossParser::Parser parser;
+	//parser.Load(L"monster.csv");
 
 	system("pause");
 }
