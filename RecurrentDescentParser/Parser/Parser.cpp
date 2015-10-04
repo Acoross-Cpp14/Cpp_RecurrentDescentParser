@@ -1,26 +1,35 @@
+// related headers
 #include "Parser.h"
 
+// STL headers
 #include <string>
 #include <iostream>
 #include <fstream>
 #include <locale>
 #include <codecvt>
-
-#include "..\Scanner\Scanner.h"
-#include "..\Scanner\FuncScanner.h"
+#include <functional>
 
 namespace AcorossParser
 {
-
-#define MATCHTRUE(x) if (!match(x))return false; else
-#define MATCH(x) if (!match(x)) return false
-
 	using namespace AcorossScanner;
-
 
 	int ParseInt(FuncScanner::Token& tk)
 	{
 		return std::wcstol(tk.data.c_str(), nullptr, 10);
+	}
+
+	bool Parser::match(Parser::TKType expected)
+	{
+		if (m_ret.type == expected)
+		{
+			m_parsedTk = m_ret;
+			m_ret = m_scanner.Scan(m_input);
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 	ARG Parser::procArg()
@@ -86,6 +95,8 @@ namespace AcorossParser
 
 	bool Parser::procArgs(ARGLIST& arglist)
 	{
+		TranPr tr(this);
+
 		FuncScanner::Token tmpTk = m_ret;
 		wchar_t* tmpInput = m_input;
 
@@ -117,122 +128,88 @@ namespace AcorossParser
 
 	bool Parser::procFunc(ARG_FUNC& func)
 	{
-		FuncScanner::Token tmpTk = m_ret;
-		wchar_t* tmpInput = m_input;
+		TranPr tr(this);
 
 		if (m_ret.type == TKType::SEMICOLON)
 		{
 			func = nullptr;
+			tr.Commit();
 			return true;
 		}
 
 		ARGLIST arglist;
 		wstring funcName;
 
-		if (match(TKType::STR))
+		MATCH(TKType::STR);
+		funcName = m_parsedTk.data;
+		MATCH(TKType::LPAREN);
+		if (false == procArgs(arglist))
 		{
-			funcName = m_parsedTk.data;
-
-			if (match(TKType::LPAREN))
-				if (procArgs(arglist))
-				{
-					func = TempFunc;
-					return true;
-				}
+			return false;
 		}
 
-		m_ret = tmpTk;
-		m_input = tmpInput;
-		return false;
+		func = TempFunc;
+		tr.Commit();
+		return true;
 	}
-	
-	class Tran
-	{
-	public:		
-		Tran(void(*func))
-		{
-			  
-		}
-	};
-
+		
 	bool Parser::procStmt()
 	{
-		FuncScanner::Token tmpTk = m_ret;
-		wchar_t* tmpInput = m_input;
-				
-		//if (match(TKType::COMMENT))
-		//	return true;
+		const std::vector<ExprToken> grammar =
+		{
+			{ TK, TKType::DIGIT },
+			{ TK, TKType::COMMA },
+			{ TK, TKType::STR },
+			{ TK, TKType::COMMA },
+			{ TK, TKType::ANYWORD },
+			{ TK, TKType::COMMA },
+			{ EXPR, ExprType::FUNC },
+			{ TK, TKType::SEMICOLON },
+		};
 
-		MATCHTRUE(TKType::DIGIT)
+		// return 될 때 rollback 됨.
+			// 명시적으로 commit 호출하면 rollback 안 됨.
+		TranPr tr(this);
+
+		for (auto it = grammar.begin(); it != grammar.end(); ++it)
 		{
-			wprintf_s(L"%d,", ParseInt(m_parsedTk));
-		}
-		MATCH(TKType::COMMA);
-		MATCHTRUE(TKType::STR)
-		{
-			wprintf_s(L"%s,", m_parsedTk.data.c_str());
-		}
-		MATCH(TKType::COMMA);
-		MATCHTRUE(TKType::ANYWORD)
-		{
-			wprintf_s(L"%s,", m_parsedTk.data.c_str());
-		}
-		MATCH(TKType::COMMA);
-		MATCHTRUE(TKType::DIGIT)
-		{
-			wprintf_s(L"%d,", ParseInt(m_parsedTk));
-		}
-		MATCH(TKType::COMMA);
-		MATCHTRUE(TKType::DIGIT)
-		{
-			wprintf_s(L"%d,", ParseInt(m_parsedTk));
-		}
-		MATCH(TKType::COMMA);
-		MATCHTRUE(TKType::DIGIT)
-		{
-			wprintf_s(L"%d,", ParseInt(m_parsedTk));
-		}
-		MATCH(TKType::COMMA);
-		MATCHTRUE(TKType::DIGIT)
-		{
-			wprintf_s(L"%d,", ParseInt(m_parsedTk));
-		}
-		MATCH(TKType::COMMA);
-		
-		ARG_FUNC tmpFunc;
-		if (procFunc(tmpFunc))
-		{
-			if (tmpFunc)
+			switch (it->type)
 			{
+			case ExprTokenType::TK:
+				MATCH(it->data.token);
+				break;
+			case ExprTokenType::EXPR:
+				ARG_FUNC tmpFunc;
+				if (false == procFunc(tmpFunc))
+				{
+					return false;
+				}
 				(*tmpFunc)();
-			}
-			
-			MATCHTRUE(TKType::SEMICOLON)
-			{
-				wprintf_s(L";");
-				return true;
+				break;
+			default:
+				return false;
+				break;
 			}
 		}
 
-		m_ret = tmpTk;
-		m_input = tmpInput;
-		return false;
-
+		tr.Commit();
+		return true;
 	}
 	
 	bool Parser::procFile()
 	{
-		FuncScanner::Token tmpTk = m_ret;
-		wchar_t* tmpInput = m_input;
+		TranPr tr(this);
 
-		if (procStmt())
-			if (match(TKType::TK_MAX))
-				return true;
+		if (false == procStmt())
+			return false;
 
-		m_ret = tmpTk;
-		m_input = tmpInput;
-		return false;
+		MATCH(TKType::TK_MAX);
+
+		tr.Commit();
+		return true;
 	}
+
+
 
 	bool Parser::Load(const wchar_t* const filename)
 	{
@@ -257,6 +234,11 @@ namespace AcorossParser
 			m_input = m_buf;
 
 			m_ret = m_scanner.Scan(m_input);
+			if (m_ret.type == TKType::COMMENT)
+			{
+				m_ret = m_scanner.Scan(m_input);
+			}
+
 			ret = procStmt();
 
 			if (ret)
@@ -271,19 +253,5 @@ namespace AcorossParser
 		}
 
 		return true;
-	}
-
-	bool Parser::match(Parser::TKType expected)
-	{
-		if (m_ret.type == expected)
-		{
-			m_parsedTk = m_ret;
-			m_ret = m_scanner.Scan(m_input);
-			return true;
-		}
-		else
-		{
-			return false;
-		}
 	}
 }

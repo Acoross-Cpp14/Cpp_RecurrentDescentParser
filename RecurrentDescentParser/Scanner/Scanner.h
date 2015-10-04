@@ -88,24 +88,25 @@ namespace AcorossScanner
 				}
 			}
 
-			// skip Comment 
-			if (*input == L'/')
-			{
-				get_next_char(input);
-				if (*input == L'/')
-				{
-					get_next_char(input);
-					while (*input != L'\n' && *input != L'\0')
-					{
-						get_next_char(input);
-					}
-				}
-			}
+			//// skip Comment 
+			//if (*input == L'/')
+			//{
+			//	get_next_char(input);
+			//	if (*input == L'/')
+			//	{
+			//		get_next_char(input);
+			//		while (*input != L'\n' && *input != L'\0')
+			//		{
+			//			get_next_char(input);
+			//		}
+			//	}
+			//}
 		}
 
 		wchar_t* pStart = input;
 
 		// TokenDefines 를 이용하여 regular expression 으로 token get.
+		int nFoundStrLength = 0;
 		unsigned int nTDCnt = TokenType::TK_MAX;
 		for (unsigned int i = 0; i < nTDCnt; ++i)	// 0 -> null
 		{
@@ -121,13 +122,18 @@ namespace AcorossScanner
 			//if (std::regex_match(input, wcm, word_regex, std::regex_constants::match_continuous))
 			if (std::regex_search(input, wcm, word_regex, std::regex_constants::match_continuous))
 			{
-				input = input + wcm[0].length();
-				ret.type = td.type;
-				ret.data = wcm[0];
+				if (wcm[0].length() > nFoundStrLength)
+				{
+					nFoundStrLength = wcm[0].length();
+					ret.type = td.type;
+					ret.data = wcm[0];
 
-				break;
+					//break;
+				}
 			}
 		}
+		
+		input = input + nFoundStrLength;
 
 		return ret;
 	}

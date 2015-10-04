@@ -1,12 +1,7 @@
 #pragma once
 
-#include "..\Scanner\Scanner.h"
-#include "..\Scanner\\FuncScanner.h"
-
 namespace NParserBase
 {
-	using namespace AcorossScanner;
-
 	class ParserBase
 	{
 	public:
