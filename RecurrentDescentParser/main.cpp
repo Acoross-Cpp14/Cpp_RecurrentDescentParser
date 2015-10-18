@@ -7,6 +7,8 @@
 #include "Parser/Parser.h"
 #include "Parser/ParserBase.h"
 
+#include "Parser\RDFuncParser.h"
+
 using namespace AcorossScanner;
 
 void RegexSample()
@@ -51,8 +53,11 @@ int main()
 	}
 */
 	
-	CParserBase p;
-	p.Run();
+	/*CFunctionParser p;
+	p.Run();*/
+
+	CRDFuncParser parser;
+	parser.RunTestProgram();
 
 	////////////////////////
 	//AcorossParser::Parser parser;

@@ -158,6 +158,7 @@ public:
 	{
 		m_mapProductions = map;
 	}
+
 	SymbolListList& GetDefine2(PsTy eType)
 	{
 		auto it = m_mapProductions.find(eType);
@@ -192,7 +193,7 @@ ParserSymbolDefines<ScanT, PsTy>* ParserSymbolDefines<ScanT, PsTy>::m_inst = nul
 
 
 
-class CParserBase
+class CFunctionParser
 {
 public:
 	///////////////////////////////
@@ -232,9 +233,12 @@ public:
 	};
 	///////////////////////////////
 public:
-	typedef PSData<FuncScanner, ParserSymbolType> MyPSData;
+	/*typedef PSData<FuncScanner, ParserSymbolType> MyPSData;
 	typedef CProductionEngine<FuncScanner, ParserSymbolType> MyProductionEngine;
-	typedef ParserSymbolDefines<FuncScanner, ParserSymbolType> MySymbolDefines;
+	typedef ParserSymbolDefines<FuncScanner, ParserSymbolType> MySymbolDefines;*/
+
+	CFunctionParser()
+	{}
 
 	void Run()
 	{
@@ -344,14 +348,22 @@ public:
 			input = buf;
 
 			auto input_token = scanner.Scan(input);
-
-			auto StartSymbolProduction = MySymbolDefines::Inst()->GetDefine2(PS_FUNC);
 			
-			bool ret = MyProductionEngine::MatchAndConsume(StartSymbolProduction, input_token, input);
+
+			auto StartSymbolProduction = 
+				ParserSymbolDefines<FuncScanner, ParserSymbolType>::Inst()->GetDefine2(PS_FUNC);
+			
+			bool ret = 
+				CProductionEngine<FuncScanner, ParserSymbolType>::MatchAndConsume(StartSymbolProduction, input_token, input);
+
+
 
 			std::cout << "ret=" << ret << std::endl;
 		}
 	}
+
+private:
+	NO_COPY(CFunctionParser);
 };
 
 

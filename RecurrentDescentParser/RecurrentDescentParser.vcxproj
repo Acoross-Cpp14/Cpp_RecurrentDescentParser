@@ -123,12 +123,14 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Parser\Parser.cpp" />
     <ClCompile Include="parser\ParserBase.cpp" />
+    <ClCompile Include="Parser\RDFuncParser.cpp" />
     <ClCompile Include="Scanner\Scanner.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="default.h" />
     <ClInclude Include="Parser\Parser.h" />
     <ClInclude Include="Parser\ParserBase.h" />
+    <ClInclude Include="Parser\RDFuncParser.h" />
     <ClInclude Include="scanner\FuncScanner.h" />
     <ClInclude Include="Scanner\Scanner.h" />
   </ItemGroup>
