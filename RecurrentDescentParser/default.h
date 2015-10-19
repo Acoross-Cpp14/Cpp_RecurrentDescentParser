@@ -1,5 +1,8 @@
 #pragma once
 
+#define DEF_CON(TypeName) \
+	TypeName() = default;
+
 #define NO_COPY(TypeName) \
   TypeName(const TypeName&);   \
   void operator=(const TypeName&);

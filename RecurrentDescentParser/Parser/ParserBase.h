@@ -242,7 +242,7 @@ public:
 
 	void Run()
 	{
-		FuncScanner scanner;
+		//FuncScanner scanner;
 
 		//MySymbolDefines::Inst()->SetDefine(
 		//	[](ParserSymbolType eType)->MySymbolDefines::SymbolListList
@@ -347,8 +347,8 @@ public:
 			wchar_t* input = buf;
 			input = buf;
 
-			auto input_token = scanner.Scan(input);
-			
+			//auto input_token = scanner.Scan(input);
+			auto input_token = FuncScanner::Scan(input);
 
 			auto StartSymbolProduction = 
 				ParserSymbolDefines<FuncScanner, ParserSymbolType>::Inst()->GetDefine2(PS_FUNC);

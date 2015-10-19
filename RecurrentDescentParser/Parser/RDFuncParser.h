@@ -57,12 +57,15 @@ public:
 	CRDFuncParser() = default;
 	~CRDFuncParser() = default;
 
-#define new_MATCH(eType) if (!match(eType)) return false;
-#define DERIVE(func) if (!func()) return false;
-#define EXPECT(eType) if (!expect(eType)) return false;
+#define new_MATCH(eType) if (!parser.match(eType)) return false;
+#define DERIVE(symbol) if (!parser.Derive(symbol)) return false;
+#define EXPECT(eType) if (!parser.expect(eType)) return false;
+
 
 	TokenStruct input_token;
 	wchar_t* input;
+
+
 
 	bool match(const TokenType eType)
 	{
@@ -81,80 +84,184 @@ public:
 		return input_token.type == eType;
 	}
 
-	bool func()
+
+	class IParserSymbolBase
 	{
-		// func -> funcname ( args )
-		new_MATCH(TokenType::STR);
-		new_MATCH(TokenType::LPAREN);
-		DERIVE(args);
-		new_MATCH(TokenType::RPAREN);
+	public:
+		IParserSymbolBase() = default;
+		virtual ~IParserSymbolBase() = default;
 
-		return true;
-	}
-
-	bool args()
-	{
-		// args -> arg argtail | e
-		if (expect(TokenType::RPAREN))
+		bool DoDerive(CRDFuncParser& parser)
 		{
-			// epsilon production
-			return true;
-		}
-		else
-		{
-			DERIVE(arg);
-			DERIVE(argtail);
-			return true;
-		}
-
-		return false;
-	}
-
-	bool argtail()
-	{
-		// argtail -> , args | e
-		if (expect(TokenType::RPAREN))
-		{
-			// epsilon production
-			return true;
-		}
-		else
-		{
-			new_MATCH(TokenType::COMMA);
-			DERIVE(args);
-			return true;
-		}
-		return false;
-	}
-
-	bool arg()
-	{
-		// arg -> func | STR | DIGIT
-		if (expect(TokenType::DIGIT))
-		{
-			new_MATCH(TokenType::DIGIT);
-			return true;
-		}
-		else if (expect(TokenType::STR))
-		{
-			wchar_t* bak_input = input;
-			TokenStruct bak_input_TK = input_token;
-
-			if (func())
+			if (Derive(parser))
 			{
+				OnDerived();
+				return true;
+			}
+			return false;
+		}
+
+		virtual bool Derive(CRDFuncParser& parser) = 0;
+		virtual void OnDerived() = 0;
+	};
+
+	enum ParserSymbolEnums
+	{
+		func,
+		args,
+		argtail,
+		arg
+	};
+
+
+	bool Derive(const ParserSymbolEnums eSymbol)
+	{
+		switch (eSymbol)
+		{
+		case func:
+		{
+			CFunc sym;
+			return sym.DoDerive(*this);
+		}
+		case args:
+		{
+			CArgs sym;
+			return sym.DoDerive(*this);
+		}
+		case argtail:
+		{
+			CArgtail sym;
+			return sym.DoDerive(*this);
+		}
+		case arg:
+		{
+			CArg sym;
+			return sym.DoDerive(*this);
+		}
+		default:
+			return false;
+		}
+	}
+
+	class CFunc : public IParserSymbolBase
+	{
+	public: 
+		DEF_CON(CFunc);
+
+	public:
+		bool Derive(CRDFuncParser& parser) final
+		{
+			// func -> funcname ( args )
+
+			EXPECT(TokenType::STR);
+			m_FuncName = parser.input_token.data;
+			new_MATCH(TokenType::STR);
+			new_MATCH(TokenType::LPAREN);
+			DERIVE(args);
+			new_MATCH(TokenType::RPAREN);
+
+			return true;
+		}
+		void OnDerived() final
+		{
+			std::wcout << "func parsed: " << m_FuncName.c_str() << std::endl;
+		}
+
+	private:
+		wstring m_FuncName;
+	};
+	
+	class CArgs : public IParserSymbolBase
+	{
+	public:
+		DEF_CON(CArgs);
+	public:
+		bool Derive(CRDFuncParser& parser) final
+		{
+			// args -> arg argtail | e
+			if (parser.expect(TokenType::RPAREN))
+			{
+				// epsilon production
 				return true;
 			}
 			else
 			{
-				input = bak_input;
-				input_token = bak_input_TK;
-				new_MATCH(TokenType::STR);
+				DERIVE(arg);
+				DERIVE(argtail);
 				return true;
 			}
-		}
 
-		return false;
-	}
+			return false;
+		}
+		void OnDerived() final
+		{
+
+		}
+	};
+
+	class CArgtail : public IParserSymbolBase
+	{
+	public:
+		DEF_CON(CArgtail);
+		bool Derive(CRDFuncParser& parser) final
+		{
+			// argtail -> , args | e
+			if (parser.expect(TokenType::RPAREN))
+			{
+				// epsilon production
+				return true;
+			}
+			else
+			{
+				new_MATCH(TokenType::COMMA);
+				DERIVE(args);
+				return true;
+			}
+			return false;
+		}
+		void OnDerived() final
+		{
+
+		}
+	};
+
+	class CArg : public IParserSymbolBase
+	{
+	public:
+		DEF_CON(CArg);
+		bool Derive(CRDFuncParser& parser) final
+		{
+			// arg -> func | STR | DIGIT
+			if (parser.expect(TokenType::DIGIT))
+			{
+				new_MATCH(TokenType::DIGIT);
+				return true;
+			}
+			else if (parser.expect(TokenType::STR))
+			{
+				wchar_t* bak_input = parser.input;
+				TokenStruct bak_input_TK = parser.input_token;
+
+				if (parser.Derive(func))
+				{
+					return true;
+				}
+				else
+				{
+					parser.input = bak_input;
+					parser.input_token = bak_input_TK;
+					new_MATCH(TokenType::STR);
+					return true;
+				}
+			}
+
+			return false;
+		}
+		void OnDerived() final
+		{
+
+		}
+	};
 
 public:
 	void RunTestProgram()
@@ -182,7 +289,7 @@ public:
 			input = buf;
 
 			input_token = FuncScanner::Scan(input);
-			bool ret = func();
+			bool ret = Derive(func);
 
 			std::cout << "ret=" << ret << std::endl;
 		}
