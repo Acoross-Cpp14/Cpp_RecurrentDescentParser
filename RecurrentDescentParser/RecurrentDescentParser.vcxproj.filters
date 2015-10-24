@@ -27,9 +27,6 @@
     <ClCompile Include="Scanner\Scanner.cpp">
       <Filter>Scanner</Filter>
     </ClCompile>
-    <ClCompile Include="Parser\Parser.cpp">
-      <Filter>Parser</Filter>
-    </ClCompile>
     <ClCompile Include="parser\ParserBase.cpp">
       <Filter>Parser</Filter>
     </ClCompile>
@@ -41,14 +38,8 @@
     <ClInclude Include="Scanner\Scanner.h">
       <Filter>Scanner</Filter>
     </ClInclude>
-    <ClInclude Include="Parser\Parser.h">
-      <Filter>Parser</Filter>
-    </ClInclude>
     <ClInclude Include="Parser\ParserBase.h">
       <Filter>Parser</Filter>
-    </ClInclude>
-    <ClInclude Include="scanner\FuncScanner.h">
-      <Filter>Scanner</Filter>
     </ClInclude>
     <ClInclude Include="default.h">
       <Filter>헤더 파일</Filter>
